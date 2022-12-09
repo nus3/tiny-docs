@@ -19,3 +19,11 @@ https://github.com/vercel/turbo/blob/main/CONTRIBUTING.md
     - Usage Error: This project is configured to use pnpm
   - 何個かテストコードが落ちるので、それは確認する
 - デモ環境の構築は`cargo run -p node-file-trace -- print demo/index.js`
+
+## Turbopack の REDAME を読んでみて
+
+`crates/turbopack/README.md`の部分
+
+## その他
+
+- GitHub Actions にスケジュールされた Action があるのでそれを disabled にした
