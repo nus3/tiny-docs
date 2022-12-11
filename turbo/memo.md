@@ -20,10 +20,12 @@ https://github.com/vercel/turbo/blob/main/CONTRIBUTING.md
   - 何個かテストコードが落ちるので、それは確認する
 - デモ環境の構築は`cargo run -p node-file-trace -- print demo/index.js`
 
-## Turbopack の REDAME を読んでみて
+## crates/turbopack/architecture.md を読んでみて
 
-`crates/turbopack/README.md`の部分
+- turbopack は turbopack-core, turbopack-css, turbopack-ecmascript、そして turbopack に分かれている
+- 現在、実装が足りていないのは turbopack-node, turbopack-wasm, turbopack-image など
 
 ## その他
 
 - GitHub Actions にスケジュールされた Action があるのでそれを disabled にした
+- publish docs の action も削除
