@@ -1,5 +1,7 @@
 # Storybook
 
+TODO: どのような仕組みで Storybook が動いてるのか`yarn start`を起点に見てく
+
 ## Contributing 読む
 
 https://github.com/nus3/storybook/tree/next#contributing
