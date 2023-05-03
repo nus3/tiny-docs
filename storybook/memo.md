@@ -27,7 +27,7 @@ https://github.com/nus3/storybook/blob/next/CONTRIBUTING.md
 🗑  Removing old sandbox dir
 
 👷 Bootstrapping Template
-> node /Users/nus3/dev/fork/storybook/code/lib/cli/bin/index.js repro react-vite/default-ts --output /Users/nus3/dev/fork/storybook/sandbox/react-vite-default-ts --branch next --no-init
+> node /fork/storybook/code/lib/cli/bin/index.js repro react-vite/default-ts --output /fork/storybook/sandbox/react-vite-default-ts --branch next --no-init
 
 🧶 Installing Yarn 2
 > touch yarn.lock
@@ -38,18 +38,18 @@ https://github.com/nus3/storybook/blob/next/CONTRIBUTING.md
 > yarn config set nodeLinker node-modules
 
 🔗 Linking packages
-> node /Users/nus3/dev/fork/storybook/code/lib/cli/bin/index.js link /Users/nus3/dev/fork/storybook/sandbox/react-vite-default-ts --local --no-start
+> node /fork/storybook/code/lib/cli/bin/index.js link /fork/storybook/sandbox/react-vite-default-ts --local --no-start
 
 ⚙️ Initializing Storybook
-> node /Users/nus3/dev/fork/storybook/code/lib/cli/bin/index.js init --yes
+> node /fork/storybook/code/lib/cli/bin/index.js init --yes
 ```
 
 エラーになる
 
 ```
-shortMessage: 'Command failed with exit code 1: node /Users/nus3/dev/fork/storybook/code/lib/cli/bin/index.js init --yes',
-  command: 'node /Users/nus3/dev/fork/storybook/code/lib/cli/bin/index.js init --yes',
-  escapedCommand: 'node "/Users/nus3/dev/fork/storybook/code/lib/cli/bin/index.js" init --yes',
+shortMessage: 'Command failed with exit code 1: node /fork/storybook/code/lib/cli/bin/index.js init --yes',
+  command: 'node /fork/storybook/code/lib/cli/bin/index.js init --yes',
+  escapedCommand: 'node "/fork/storybook/code/lib/cli/bin/index.js" init --yes',
   exitCode: 1,
   signal: undefined,
   signalDescription: undefined,
@@ -89,9 +89,9 @@ shortMessage: 'Command failed with exit code 1: node /Users/nus3/dev/fork/storyb
 - `scripts/tasks/sandbox.ts`を見てみる
   - `scripts/tasks/sandbox-parts.ts`から`create`と`install`と`extendMain`を実行してる
   - 🔗 Linking packages を出力するのはこの`install`が該当
-  - `node /Users/nus3/dev/fork/storybook/code/lib/cli/bin/index.js init --yes`でエラー出てる
+  - `node /fork/storybook/code/lib/cli/bin/index.js init --yes`でエラー出てる
 - `sandbox/react-vite-default-ts`のパッケージ名が`before-storybook`のこと
 - react-vite-default-ts として生成される sandbox 環境では`@vitejs/plugin-react`のバージョンが`"^4.0.0"`になっているが、code 側の方のバージョンが 3.1.0 になっているのが問題っぽい
-  - `@storybook/react-vite@portal:/Users/nus3/dev/fork/storybook/code/frameworks/react-vite:`
+  - `@storybook/react-vite@portal:/fork/storybook/code/frameworks/react-vite:`
 - `code/frameworks/react-vite/package.json`の`@vitejs/plugin-react`のバージョンを`^4.0.0`に変えてみる
   - そしたら動いた
