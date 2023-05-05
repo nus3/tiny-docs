@@ -1,7 +1,5 @@
 # Storybook
 
-TODO: どのような仕組みで Storybook が動いてるのか`yarn start`を起点に見てく
-
 ## Contributing 読む
 
 https://github.com/nus3/storybook/tree/next#contributing
@@ -95,3 +93,56 @@ shortMessage: 'Command failed with exit code 1: node /fork/storybook/code/lib/cl
   - `@storybook/react-vite@portal:/fork/storybook/code/frameworks/react-vite:`
 - `code/frameworks/react-vite/package.json`の`@vitejs/plugin-react`のバージョンを`^4.0.0`に変えてみる
   - そしたら動いた
+- sandbox 環境をどのコマンドで実行しているかは`code/lib/cli/src/sandbox-templates.ts`に記載されている
+  - デフォルトの場合は vite の react-ts
+    - `npm create vite@latest --yes . -- --template react-ts`
+- sandbox 環境のディレクトリでは storybook 関連のパッケージは resolutions される
+  - `scripts/sandbox/generate.ts`の`packageManager.addPackageResolutions(storybookVersions)`らへんがおそらくそう
+  - sandbox の resolutions に記載されているパッケージ
+    - `"@storybook/addon-a11y": "portal:/Users/nus3/dev/fork/storybook/code/addons/a11y",`
+  - `code`ディレクトリが実際の実装部分になりそう
+
+## ディレクトリ構造
+
+```
+.
+├── code  // Storybookの本体周り
+│   ├── __mocks__
+│   ├── addons
+│   ├── e2e-tests
+│   ├── frameworks
+│   ├── lib
+│   ├── node_modules
+│   ├── presets
+│   ├── renderers
+│   └── ui
+├── docs
+│   ├── addons
+│   ├── api
+│   ├── assets
+│   ├── builders
+│   ├── configure
+│   ├── contribute
+│   ├── essentials
+│   ├── get-started
+│   ├── sharing
+│   ├── snippets
+│   ├── versions
+│   ├── writing-docs
+│   ├── writing-stories
+│   └── writing-tests
+├── node_modules
+├── sandbox  rootで`npm start`すると生成される環境
+│   └── react-vite-default-ts
+├── scripts
+│   ├── node_modules
+│   ├── prepare
+│   ├── sandbox
+│   ├── tasks
+│   └── utils
+└── test-storybooks
+    ├── ember-cli
+    ├── external-docs
+    ├── server-kitchen-sink
+    └── standalone-preview
+```
