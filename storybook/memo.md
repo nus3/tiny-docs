@@ -1,5 +1,7 @@
 # Storybook
 
+TODO: code/lib/core-server/src/dev-server.ts を見てどのように storybook のサーバーが起動されてるか確認するところから
+
 ## Contributing 読む
 
 https://github.com/nus3/storybook/tree/next#contributing
@@ -134,7 +136,7 @@ shortMessage: 'Command failed with exit code 1: node /fork/storybook/code/lib/cl
 ├── node_modules
 ├── sandbox  rootで`npm start`すると生成される環境
 │   └── react-vite-default-ts
-├── scripts
+├── scripts  rootで`npm start`した際に実行されるファイルが
 │   ├── node_modules
 │   ├── prepare
 │   ├── sandbox
