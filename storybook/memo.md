@@ -99,7 +99,7 @@ shortMessage: 'Command failed with exit code 1: node /fork/storybook/code/lib/cl
 - sandbox 環境のディレクトリでは storybook 関連のパッケージは resolutions される
   - `scripts/sandbox/generate.ts`の`packageManager.addPackageResolutions(storybookVersions)`らへんがおそらくそう
   - sandbox の resolutions に記載されているパッケージ
-    - `"@storybook/addon-a11y": "portal:/Users/nus3/dev/fork/storybook/code/addons/a11y",`
+    - `"@storybook/addon-a11y": "portal:storybook/code/addons/a11y",`
   - `code`ディレクトリが実際の実装部分になりそう
 
 ## ディレクトリ構造
