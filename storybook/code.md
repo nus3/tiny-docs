@@ -7,6 +7,114 @@
   - `"@storybook/cli": "portal:storybook/code/lib/cli"`
 - sandbox 環境で実行される storybook コマンドは dev と build がある
 
+## ディレクトリ構造
+
+```
+.
+├── __mocks__
+├── addons
+│   ├── a11y
+│   ├── actions
+│   ├── backgrounds
+│   ├── controls
+│   ├── docs
+│   ├── essentials
+│   ├── gfm
+│   ├── highlight
+│   ├── interactions
+│   ├── jest
+│   ├── links
+│   ├── measure
+│   ├── outline
+│   ├── storyshots-core
+│   ├── storyshots-puppeteer
+│   ├── storysource
+│   ├── toolbars
+│   └── viewport
+├── e2e-tests
+├── frameworks
+│   ├── angular
+│   ├── ember
+│   ├── html-vite
+│   ├── html-webpack5
+│   ├── nextjs
+│   ├── preact-vite
+│   ├── preact-webpack5
+│   ├── react-vite
+│   ├── react-webpack5
+│   ├── server-webpack5
+│   ├── svelte-vite
+│   ├── svelte-webpack5
+│   ├── sveltekit
+│   ├── vue-vite
+│   ├── vue-webpack5
+│   ├── vue3-vite
+│   ├── vue3-webpack5
+│   ├── web-components-vite
+│   └── web-components-webpack5
+├── lib
+│   ├── addons
+│   ├── builder-manager
+│   ├── builder-vite
+│   ├── builder-webpack5
+│   ├── channel-postmessage
+│   ├── channel-websocket
+│   ├── channels
+│   ├── cli
+│   ├── cli-sb
+│   ├── cli-storybook
+│   ├── client-api
+│   ├── client-logger
+│   ├── codemod
+│   ├── core-client
+│   ├── core-common
+│   ├── core-events
+│   ├── core-server
+│   ├── core-webpack
+│   ├── csf-plugin
+│   ├── csf-tools
+│   ├── docs-tools
+│   ├── instrumenter
+│   ├── manager-api
+│   ├── manager-api-shim
+│   ├── node-logger
+│   ├── postinstall
+│   ├── preview
+│   ├── preview-api
+│   ├── preview-web
+│   ├── react-dom-shim
+│   ├── router
+│   ├── source-loader
+│   ├── store
+│   ├── telemetry
+│   ├── theming
+│   └── types
+├── presets
+│   ├── create-react-app
+│   ├── html-webpack
+│   ├── preact-webpack
+│   ├── react-webpack
+│   ├── server-webpack
+│   ├── svelte-webpack
+│   ├── vue-webpack
+│   ├── vue3-webpack
+│   └── web-components-webpack
+├── renderers
+│   ├── html
+│   ├── preact
+│   ├── react
+│   ├── server
+│   ├── svelte
+│   ├── vue
+│   ├── vue3
+│   └── web-components
+└── ui
+    ├── blocks
+    ├── components
+    └── manager
+
+```
+
 ## storybook コマンドの流れ
 
 - storybook コマンドを実行する

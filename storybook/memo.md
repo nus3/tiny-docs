@@ -132,9 +132,9 @@ shortMessage: 'Command failed with exit code 1: node /fork/storybook/code/lib/cl
 │   ├── writing-stories
 │   └── writing-tests
 ├── node_modules
-├── sandbox  rootで`npm start`すると生成される環境
+├── sandbox  rootで`yarn start`すると生成される環境
 │   └── react-vite-default-ts
-├── scripts  rootで`npm start`した際に実行されるファイルが
+├── scripts  rootで`yarn start`した際に実行されるファイルが
 │   ├── node_modules
 │   ├── prepare
 │   ├── sandbox
