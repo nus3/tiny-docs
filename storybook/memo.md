@@ -1,7 +1,5 @@
 # Storybook
 
-TODO: code/lib/core-server/src/dev-server.ts を見てどのように storybook のサーバーが起動されてるか確認するところから
-
 ## Contributing 読む
 
 https://github.com/nus3/storybook/tree/next#contributing
@@ -148,3 +146,12 @@ shortMessage: 'Command failed with exit code 1: node /fork/storybook/code/lib/cl
     ├── server-kitchen-sink
     └── standalone-preview
 ```
+
+## Storybook の Contribution のドキュメントを読んで
+
+https://storybook.js.org/docs/react/contribute/code
+
+- sandbox 環境を起動しつつ、`code`の中を変更したら`code`配下でビルドすることで、sandbox 環境で確認できる
+- Storybook ではコンポーネントが描画される部分が Preview iframe、それ以外の部分が Manager app
+- Manager app と Preview iframe とのやりとりを Communication channel でやりとりしてるっぽい
+- next ブランチは最新のプレリリースバージョンに関連づけられている
