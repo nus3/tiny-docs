@@ -13,10 +13,10 @@
 
 ```ts
 {
-  builderName: "/Users/nus3/dev/fork/storybook/sandbox/react-vite-default-ts/node_modules/@storybook/builder-vite";
+  builderName: "home/storybook/sandbox/react-vite-default-ts/node_modules/@storybook/builder-vite";
 }
 {
-  builderPackage: "/Users/nus3/dev/fork/storybook/sandbox/react-vite-default-ts/node_modules/@storybook/builder-vite/dist/index.js";
+  builderPackage: "home/storybook/sandbox/react-vite-default-ts/node_modules/@storybook/builder-vite/dist/index.js";
 }
 ```
 
