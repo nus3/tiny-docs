@@ -113,7 +113,7 @@ https://github.com/storybookjs/storybook/blob/1328d492f55a74921b4e125b90a9ddade1
 - dev コマンド実行時に起動するサーバーでは下記のようなリクエストを投げると対象のコンポーネントだけが描画された状態になる
   - `http://localhost:6006/iframe.html?globals=backgrounds.grid:!false;theme:dark&viewMode=story&id=example-button--primary`
 - サーバー側に`/iframe.html`のリクエストが送られるとどうなるのか
-- dev コマンド時のサーバー側の処理を思い出すと、Manager 側の UI は`managerBuilder.start()`で実行されていた
+- dev コマンド時のサーバー側の処理を思い出すと、Manager 側の UI は œ で実行されていた
 - 同じファイルでは`previewBuilder.start()`も実行されている
   - https://github.com/storybookjs/storybook/blob/09db9f7dd11356714952449cbfd8280407b014c3/code/lib/core-server/src/dev-server.ts#L90C34-L97
 
