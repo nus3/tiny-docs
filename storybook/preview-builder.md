@@ -1,5 +1,15 @@
 # Storybook の Preview(コンポーネントを描画してる箇所)部分はどのようにコンポーネントを描画しているのか
 
+## 2023/06/01 作業分までのまとめ
+
+- `.storybook/main.ts`の`framework`で指定したパッケージの preset から`builder`と`render`を決めている
+- `builder`の一つである`@storybook/builder-vite`では dev サーバーに`/iframe.html`にリクエストが飛んできたら、`@storybook/builder-vite/input/iframe.html`の html をレスポンスとして返す
+- この html では`./sb-preview/runtime.js`と`/virtual:/@storybook/builder-vite/vite-app.js`の二つの JS が呼び出されている。
+
+TODO: `./sb-preview/runtime.js`は manger と preview のやり取りする用の API が提供されてそうで、コンポーネントの描画は`/virtual:/@storybook/builder-vite/vite-app.js`が行なっていそうなので、このファイルがどこでビルドされて、何をしているのかを調べるところから
+
+## 予想
+
 - dev コマンドで起動するサーバーに対して、`/iframe.html`へ投げたリクエストのレスポンス部分が描画されてそう
 - Manager の UI は`managerBuilder.start()`で定義されていた
 - ということは Preview(`/iframe.html`)へのリクエストの処理は`previewBuilder.start()`で定義されてるのでは
@@ -13,10 +23,10 @@
 
 ```ts
 {
-  builderName: "home/storybook/sandbox/react-vite-default-ts/node_modules/@storybook/builder-vite";
+  builderName: "storybook/sandbox/react-vite-default-ts/node_modules/@storybook/builder-vite";
 }
 {
-  builderPackage: "home/storybook/sandbox/react-vite-default-ts/node_modules/@storybook/builder-vite/dist/index.js";
+  builderPackage: "storybook/sandbox/react-vite-default-ts/node_modules/@storybook/builder-vite/dist/index.js";
 }
 ```
 
@@ -34,7 +44,6 @@
   - `.storybook`に main と preset があるかどうかを確認し、`main`があれば main の値を返し、そうじゃない場合は presets の値を返す
 - builder と renderer は code/frameworks で定義されてる
 - storybook の main.ts(コンフィグ)で`framework`に`@storybook/react-vite`を指定した場合、`code/frameworks/react-vite/src/preset.ts`が読み込まれる
-  - TODO: 該当の実装箇所を読む
 - この preset の`core`オブジェクトに`builder`と`renderer`が定義されている
   - https://github.com/storybookjs/storybook/blob/529089564eb1b369603ee3c563c3ed6f585002f9/code/frameworks/react-vite/src/preset.ts#L9-L12
 - 今回の場合、builder には`@storybook/builder-vite`が利用されている
@@ -82,6 +91,16 @@
   - https://github.com/storybookjs/storybook/blob/3e61433725866d3565489f1de7ced5b3510efde1/code/frameworks/react-vite/src/preset.ts#L14
 - core の中に定義されている builder は`wrapForPnP('@storybook/builder-vite') as '@storybook/builder-vite'`
 
+ざっくりまとめると下記の流れ
+
+- .storybook/main.ts から framework で指定したパッケージ名 + preset(例: `@storybook/react-vite/preset`)のモジュールを実行した結果を取得する
+- 例えば `@storybook/react-vite/preset`の場合、`core`と`viteFinal`を export する
+- `core`の中には`builder`と`renderer`が定義されている
+- この`core.builder.name`が`getPreviewBuilder`で dynamic import されるパッケージ名になっている
+  - https://github.com/storybookjs/storybook/blob/3e61433725866d3565489f1de7ced5b3510efde1/code/lib/core-server/src/utils/get-builders.ts#L21
+  - `core.builder`は値はプロジェクトの node_modules の該当の builder パッケージの絶対パスを返す
+    - `storybook/sandbox/react-vite-default-ts/node_modules/@storybook/builder-vite`
+
 ### esbuid-register
 
 register 関数が実行されると Node.js で TypeScript ファイルを require や import で読み込もうとすると、esbuild を利用して実行可能な JS に変換する
@@ -93,9 +112,61 @@ https://github.com/egoist/esbuild-register
 
 ## `@storybook/builder-vite`
 
-- `code/lib/builder-vite`に実装がある
-  - https://github.com/storybookjs/storybook/tree/next/code/lib/builder-vite
+- `storybook dev`実行時、preview に関しては`previewBuilder.start()`が関連してそう
+  - https://github.com/storybookjs/storybook/blob/3e61433725866d3565489f1de7ced5b3510efde1/code/lib/core-server/src/dev-server.ts#L90-L97
+- framework に`@storybook/react-vite`を指定すると`core`が返す`builder`は`@storybook/builder-vite`になる
+- `@storybook/builder-vite`の実装は`code/builders/builder-vite`
+- `previewBuilder.start()`の実装箇所
+  - https://github.com/storybookjs/storybook/blob/3e61433725866d3565489f1de7ced5b3510efde1/code/builders/builder-vite/src/index.ts#L61-L66
+- `/sb-preview`にリクエストが来たら、`@storybook/preview/dist`の静的ファイルをレスポンスとして返すように
+  - https://github.com/storybookjs/storybook/blob/3e61433725866d3565489f1de7ced5b3510efde1/code/builders/builder-vite/src/index.ts#L72
+- `iframeMiddleware`を登録しており、リクエストの url が`/iframe.html`の場合に`@storybook/builder-vite/input/iframe.html`のファイル内容を読み込む
+  - `transformIframeHtml`で描画に必要なグローバル変数を差し込む
+  - `/iframe.html`が来た時には、グローバル変数が差し込まれた`@storybook/builder-vite/input/iframe.html`が描画される
+  - https://github.com/storybookjs/storybook/blob/3e61433725866d3565489f1de7ced5b3510efde1/code/builders/builder-vite/src/index.ts#L44-L51
+- `@storybook/builder-vite/input/iframe.html`では二つの script が読み込まれている
+  - https://github.com/storybookjs/storybook/blob/3e61433725866d3565489f1de7ced5b3510efde1/code/builders/builder-vite/input/iframe.html#L37-L38
 
-## TODO
+```html
+<script type="module" src="./sb-preview/runtime.js"></script>
+<script
+  type="module"
+  src="/virtual:/@storybook/builder-vite/vite-app.js"
+></script>
+```
 
-`@storybook/builder-vite`(`code/lib/builder-vite`)の実装を読む
+- `/sb-preview/runtime.js`は`@storybook/preview`で生成された JS ファイル
+  - https://github.com/storybookjs/storybook/blob/3e61433725866d3565489f1de7ced5b3510efde1/code/builders/builder-vite/src/index.ts#LL69C9-L69C9
+  - manger の方がクライアントサイドで読み込んでいるのは`./sb-manager/runtime.js`
+  - こっちは Storybook 系の API だったり、manager と preview のやり取り用のパッケージの定義？
+- `/virtual:/@storybook/builder-vite/vite-app.js`が何を読み込んでいるのか
+  - 実際のコンポーネントの描画はこっちがやってそう？
+
+## `@storybook/preview`
+
+- preview 側のクライアントサイドで読み込まれる js ファイルを生成している
+- 実装は`code/lib/preview`
+- `runtime.ts`では globals の情報を replace している
+  - https://github.com/storybookjs/storybook/blob/3e61433725866d3565489f1de7ced5b3510efde1/code/lib/preview/src/runtime.ts#L1-L9
+- 実際には下記のようにクライアントサイドで import 先のファイルを上書きしてそう
+  - https://github.com/storybookjs/storybook/blob/3e61433725866d3565489f1de7ced5b3510efde1/code/lib/preview/src/globals/runtime.ts#L18
+- 下記のパッケージからレンダリングに関連してそうなパッケージを見ていく
+
+```ts
+import * as CHANNEL_POSTMESSAGE from "@storybook/channel-postmessage";
+import * as CHANNEL_WEBSOCKET from "@storybook/channel-websocket";
+import * as CHANNELS from "@storybook/channels";
+import * as CLIENT_LOGGER from "@storybook/client-logger";
+import * as CORE_EVENTS from "@storybook/core-events";
+import * as PREVIEW_API from "@storybook/preview-api";
+```
+
+## `@storybook/preview-api`
+
+- 実装は`code/lib/preview-api`
+
+## `/virtual:/@storybook/builder-vite/vite-app.js`は何をやっているのか
+
+## Builder API のドキュメントがある
+
+https://storybook.js.org/docs/react/builders/builder-api#page-top
