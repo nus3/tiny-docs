@@ -164,9 +164,3 @@ import * as PREVIEW_API from "@storybook/preview-api";
 ## `@storybook/preview-api`
 
 - 実装は`code/lib/preview-api`
-
-## `/virtual:/@storybook/builder-vite/vite-app.js`は何をやっているのか
-
-## Builder API のドキュメントがある
-
-https://storybook.js.org/docs/react/builders/builder-api#page-top
