@@ -336,8 +336,37 @@ const getProjectAnnotations = async () => {
 - sandbox では storyAnnotations にも componentAnnotations にも decorators は定義されておらず、`projectAnnotations`の decorators が使われてそう
 - `projectAnnotations`の`decorators`は`@storybook/react/preview`で定義されている
   - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/renderers/react/src/config.ts#L5
+- decorators は`jsxDecorator`
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/renderers/react/src/docs/config.ts#L16
+- `jsxDecorator`では JSX を render してそう
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/renderers/react/src/docs/jsxDecorator.tsx#L167-L170
+- `renderJsx`をした後は、下記のような string が生成される
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/renderers/react/src/docs/jsxDecorator.tsx#L206-L209
+
+```jsx
+<Button label="Button" onClick={() => {}} primary />
+```
+
+- `jsxDecorator`に渡された`storyFn`を実行すると`ReactElement`が生成される
+- この`ReactElement`が`<Story>`コンポーネントとしてレンダリングされる
+
+## `storyFn`
+
+- `jsxDecorator`に渡される`storyFn`を実行すると`ReactElement`が生成された
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/renderers/react/src/docs/jsxDecorator.tsx#L187-L209
+- `storyFn`の実態はどれか
+- `prepareStory`の中の`applyHooks`を実行する際に、`undecoratedStoryFn`が渡されててこれっぽい
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/store/csf/prepareStory.ts#L87
+- `undecoratedStoryFn`はのちに定義される`render`
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/store/csf/prepareStory.ts#L62-L66
+- おそらく、`projectAnnotations.render`が利用されている
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/store/csf/prepareStory.ts#L84
+- `projectAnnotations.render`は`@storybook/react/preview`の中で定義されている
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/renderers/react/src/config.ts#L7
+- `render`では、context の中にある`component`が`ReactElement`として返される
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/renderers/react/src/render.tsx#L12-L21
 
 ## TODO
 
 - `PreviewWithSelection` の`renderSelection`がどこで実行されているか確認する
-- `code/renderers/react/src/config.ts`の`decorators`が何をしているのか調べるところから
+- `render`に渡される`context.component`がどこで定義されているのか調べるところから
