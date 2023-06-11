@@ -155,6 +155,3 @@ const getProjectAnnotations = async () => {
     - https://github.com/storybookjs/storybook/blob/ec249113e0890ea0935ff8c6f56e8923c107e7eb/code/lib/preview-api/src/modules/store/StoryStore.ts#L109-L115
 - PreviewWeb のテストコードを見る感じ、`initialize`でレンダリングまでいけてそうな気がするんだけどもな
   - https://github.com/storybookjs/storybook/blob/ec249113e0890ea0935ff8c6f56e8923c107e7eb/code/lib/preview-api/src/modules/preview-web/PreviewWeb.test.ts#L106-L121
-
-TODO: 初期化処理からどのように Story がレンダリングされているのか調べるところから
-https://github.com/storybookjs/storybook/blob/ec249113e0890ea0935ff8c6f56e8923c107e7eb/code/lib/preview-api/src/modules/store/StoryStore.ts#L109-L115
