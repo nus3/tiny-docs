@@ -1,4 +1,10 @@
-# Storybook の Preview(コンポーネントを描画してる箇所)部分はどのようにコンポーネントを描画しているのか
+# Storybook は dev モード時に Preview(コンポーネントを描画してる箇所)部分をどのようにレンダリングしているのか
+
+## 3 行まとめ
+
+- [builder(今回の場合、builder-vite)で必要なモジュールを dynamic import する](https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/builders/builder-vite/src/codegen-modern-iframe-script.ts#L23-L30)
+- [`@storybook/preview-api`で、dynamic import された各モジュールから export された関数やオブジェクトを紐づけている](https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/store/csf/composeConfigs.ts#L45-L66)
+- [`@storybook/react`などの各レンダラーでは、紐づけられる予定の関数やオブジェクトを export している](https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/renderers/react/src/config.ts#L7)
 
 ## これまでのまとめ
 
@@ -368,5 +374,6 @@ const getProjectAnnotations = async () => {
 
 ## TODO
 
-- `PreviewWithSelection` の`renderSelection`がどこで実行されているか確認する
-- `render`に渡される`context.component`がどこで定義されているのか調べるところから
+- `PreviewWithSelection` の`renderSelection`がどこで実行されているか
+- `render`に渡される`context.component`がどこで定義されているか
+- `stories`ファイルで記載された CSF3.0 の記法をどのようにコンポーネントに変換しているか
