@@ -125,3 +125,18 @@ export default meta;
   - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/store/StoryStore.ts#L292
 - `StoryStore.getStoryContext`は`StoryRender.storyContext`の中で呼ばれ、`StoryRender.storyContext`は`StoryRender.render`が実行されるときに呼ばれる
   - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/preview-web/render/StoryRender.ts#L181-L189
+
+## `PreviewWithSelection` の`renderSelection`がどこで実行されているか
+
+- `PreviewWithSelection.renderSelection`がレンダリングの際に実行されていそう
+- `/virtual:/@storybook/builder-vite/vite-app.js`を読み込んだ際に、どういった流れで`PreviewWithSelection.renderSelection`が実行されているのか
+- `PreviewWeb().initialize({ importFn, getProjectAnnotations })`を実行する中で`Preview.initializeWithProjectAnnotations`が実行される
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/preview-web/Preview.tsx#L97
+- `Preview.initializeWithProjectAnnotations`の中では`Preview.initializeWithStoryIndex`が呼ばれる
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/preview-web/Preview.tsx#L156
+  - `initializeWithStoryIndex`は継承先のクラスである`PreviewWithSelection`でも定義されており、`PreviewWithSelection.selectSpecifiedStory`が実行される
+    - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/preview-web/PreviewWithSelection.tsx#L118-L126
+- `PreviewWithSelection.selectSpecifiedStory`の中で、`PreviewWithSelection.renderSelection`が実行される
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/preview-web/PreviewWithSelection.tsx#L172
+
+<!-- TODO: 親、子、孫のクラスで同一のメソッド名がある場合の実行順を確認する -->
