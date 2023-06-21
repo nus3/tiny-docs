@@ -38,6 +38,90 @@
 
 ## decorator として使われる`jsxDecorator`が何をしているのかまとめる
 
-`code/renderers/react/src/docs/jsxDecorator.tsx`
+- `code/renderers/react/src/docs/jsxDecorator.tsx`に実装が定義されている
+- [`jsxDecorator`では、引数で渡された`storyFn`の返り値を返している]
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/renderers/react/src/docs/jsxDecorator.tsx#L187-L192
+  - `storyFn`の返り値は ReactElement
+    - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/renderers/react/src/types.ts#L21
+- `jsxDecorator`の引数として渡される`storyFn`はデフォルトでは`projectAnnotations`の`render`になりそう
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/store/csf/prepareStory.ts#L62-L67
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/store/csf/prepareStory.ts#L80-L84
+- `projectAnnotations`にある`render`は`@storybook/react/preview`で提供される`render`
+  - この`render`では、第二引数の`context`オブジェクトの`component`プロパティを使って`ReactElement`を返している
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/renderers/react/src/render.tsx#L12-L21
+- この`context`は`unboundStoryFn`に渡される引数っぽい
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/store/csf/prepareStory.ts#LL88C1-L88C1
+- `unboundStory`は`renderToCanvas`で実行されており、`context`は`renderToCanvas`の引数になっている
+  - https://github.com/storybookjs/storybook/blob/c739d024f666aa6f9dd846804a9cb5336358b516/code/renderers/react/src/render.tsx#L57-L73
+- `renderToCanvas`に引数が渡されるのは`StoryRender.renderToScreen`
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/preview-web/PreviewWithSelection.tsx#L306-L310
+- `StoryRender.renderToScreen`は`StoryRender.render`の中で実行されており、`context`は`renderContext`が実態
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/preview-web/render/StoryRender.ts#L214
+- `renderContext`の中にある`storyContext`は`renderStoryContext`
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/preview-web/render/StoryRender.ts#L208
+- `renderStoryContext`の中の`component`プロパティをみると ReactElement が格納されていそう
+- `renderStoryContext`の値は、`loadedContext`と`this.storyContext()`が展開されている
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/preview-web/render/StoryRender.ts#L182-L185
+- `loadedContext`は`StoryRender.story`に格納されている`applyLoaders`の返り値
+- `StoryRender.story`は`StoryRender.store.loadStory`の返り値
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/preview-web/render/StoryRender.ts#L100
+- `StoryRender.store`は`StoryStore`のインスタンスなので`StoryRender.store.loadStory` === `StoryStore.loadStory`
+- また、`StoryRender.storyContext`は`StoryStore.getStoryContext`の返り値である
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/preview-web/render/StoryRender.ts#L137-L141
+- `StoryRender.store.loadStory`から`applyLoaders`の実装を確認する
+  - 中身を見ていくと projectAnnotations などから `loaders` を取得している
+    - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/store/csf/prepareStory.ts#L51-L60
+- `loaders`は sandbox では、storybook を利用する側で定義されている
 
-TODO
+```ts: sandbox/react-vite-default-ts/template-stories/lib/preview-api/preview.ts
+export const loaders = [async () => ({ projectValue: 2 })];
+```
+
+- `getProjectAnnotations`では`import("/template-stories/lib/preview-api/preview.ts"),`が該当しそう
+- `context`の値を生成してそうな`StoryStore.getStoryContext`の実装を見る
+- `StoryStore.getStoryContext`では`prepareContext`の返り値になっているが、この引数の中にある`story`にはすでに`component`が定義されている
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/store/StoryStore.ts#L284-L296
+- `StoryStore.getStoryContext`が使われているのは`StoryRender.storyContext`の中で、この中では`StoryRender.story`が渡されている
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/preview-web/render/StoryRender.ts#L140
+- `StoryRender.story`は`StoryStore.loadStory`の返り値
+  - https://github.com/storybookjs/storybook/blob/9630bdd1622ba0533948445c22b96164c865d965/code/lib/preview-api/src/modules/preview-web/render/StoryRender.ts#L100
+- `StoryStore.loadCSFFileByStoryId`を実行すると`context.component`の値が生成されていそう
+- `storyId`から`importPath`を取得、そのパスを使用して dynamic import してそう。そのモジュールを`StoryStore.processCSFFileWithCache`に渡している。
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/store/StoryStore.ts#L145-L154
+  - `processCSFFileWithCache`は`processCSFFile`
+  - `storyIndex`には対象の story の importPath などが定義されている
+    - https://nus3.slack.com/archives/DB31XDW83/p1687330301147389?thread_ts=1687322475.080149&cid=DB31XDW83
+  - `StoryStore.storyIndex.storyIdToEntry`に該当の id を渡すことで import に必要な path や title を取得できる
+  - `importPath`には CSF で定義されたファイルのパスが入っている
+- `processCSFFile`では CSF で定義されたモジュールから export されたものを取得する
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/store/csf/processCSFFile.ts#L52-L80
+- CSF ファイルで定義された meta 情報の中に`component`があれば、これが`context.component`の値になる
+
+```ts
+const meta = {
+  title: "Example/Button",
+  component: Button,
+  tags: ["autodocs"],
+  argTypes: {
+    backgroundColor: { control: "color" },
+  },
+} satisfies Meta<typeof Button>;
+
+export default meta;
+```
+
+- `@storybook/react/preview`の`render`がレンダリングには使われており、この`render`関数に渡される`context`オブジェクトの中の`component`が描画には使われている
+- この`context.component`は CSF で定義された story ファイルの `meta` にある `component` が該当する
+- storyId からレンダリングする story を決めてそう
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/store/StoryStore.ts#L233-L243
+  - `storyAnnotations`がおそらく各 story で設定する値で、`componentAnnotations`が CSF ファイルで定義された`meta`の値
+  - `storyAnnotations`には対象の story をレンダリングする上で props に渡したい値が`args`に格納されている
+  - CSF ファイルで定義した Story オブジェクトの`args`プロパティが`context`にも格納される
+- `@storybook/react/preview`の`render`では第一引数で`args`を受け取っている
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/renderers/react/src/render.tsx#L12-L21
+- `@storybook/react/preview`の`render`関数は`prepareStory`の中で実行されており、`context.args`が第一引数に渡されている
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/store/csf/prepareStory.ts#L65
+- `context.args`の生成は`StoryStore.getStoryContext`のタイミングでやってそう
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/store/StoryStore.ts#L292
+- `StoryStore.getStoryContext`は`StoryRender.storyContext`の中で呼ばれ、`StoryRender.storyContext`は`StoryRender.render`が実行されるときに呼ばれる
+  - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/preview-web/render/StoryRender.ts#L181-L189

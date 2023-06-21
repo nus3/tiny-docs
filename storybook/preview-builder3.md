@@ -375,5 +375,3 @@ const getProjectAnnotations = async () => {
 ## TODO
 
 - `PreviewWithSelection` の`renderSelection`がどこで実行されているか
-- `render`に渡される`context.component`がどこで定義されているか
-- `stories`ファイルで記載された CSF3.0 の記法をどのようにコンポーネントに変換しているか
