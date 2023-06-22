@@ -93,7 +93,7 @@ export const loaders = [async () => ({ projectValue: 2 })];
     - https://nus3.slack.com/archives/DB31XDW83/p1687330301147389?thread_ts=1687322475.080149&cid=DB31XDW83
   - `StoryStore.storyIndex.storyIdToEntry`に該当の id を渡すことで import に必要な path や title を取得できる
   - `importPath`には CSF で定義されたファイルのパスが入っている
-- `processCSFFile`では CSF で定義されたモジュールから export されたものを取得する
+- `processCSFFile`では CSF で定義されたモジュール#から export されたものを取得する
   - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/store/csf/processCSFFile.ts#L52-L80
 - CSF ファイルで定義された meta 情報の中に`component`があれば、これが`context.component`の値になる
 
@@ -138,5 +138,3 @@ export default meta;
     - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/preview-web/PreviewWithSelection.tsx#L118-L126
 - `PreviewWithSelection.selectSpecifiedStory`の中で、`PreviewWithSelection.renderSelection`が実行される
   - https://github.com/storybookjs/storybook/blob/3899b2b480397b9844733d9ddae4efb3e7d409f9/code/lib/preview-api/src/modules/preview-web/PreviewWithSelection.tsx#L172
-
-<!-- TODO: 親、子、孫のクラスで同一のメソッド名がある場合の実行順を確認する -->
