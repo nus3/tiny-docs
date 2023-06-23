@@ -41,5 +41,11 @@ TypeError: (0 , import_node_url.pathToFileURL).then is not a function
 - tsx と ts-node + swc は実行結果変わるのでホゲー
 - args なさそう
 - http://localhost:3000/iframe.html?args=&id=example-button--primary&viewMode=story
+- feature に storeyStorev7 入れたら、`code/lib/core-server/src/dev-server.ts`で`getStoryIndexGenerator`の処理を知れないといけないかも
+- `slash`は下記のエラーを吐く
+  - cjs でやろうとしてるのに esm でエラー吐く的な？
 
-<!-- TODO: 自作のbuildDevStandaloneがなぜコンポーネントをインポートできないのか調べるところから -->
+```
+Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/nus3/dev/me/tiny-storybook/node_modules/.pnpm/slash@5.1.0/node_modules/slash/index.js from /Users/nus3/dev/me/tiny-storybook/src/storyIndexGenerator/watch-story-specifiers.ts not supported.
+Instead change the require of index.js in /Users/nus3/dev/me/tiny-storybook/src/storyIndexGenerator/watch-story-specifiers.ts to a dynamic import() which is available in all CommonJS modules.
+```
