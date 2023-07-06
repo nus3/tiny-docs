@@ -47,5 +47,11 @@ TypeError: (0 , import_node_url.pathToFileURL).then is not a function
 
 ```
 Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/nus3/dev/me/tiny-storybook/node_modules/.pnpm/slash@5.1.0/node_modules/slash/index.js from /Users/nus3/dev/me/tiny-storybook/src/storyIndexGenerator/watch-story-specifiers.ts not supported.
-Instead change the require of index.js in /Users/nus3/dev/me/tiny-storybook/src/storyIndexGenerator/watch-story-specifiers.ts to a dynamic import() which is available in all CommonJS modules.
+Instead change the require of index.js in /Users/nus3/dev/me/tiny-storybk/src/storyIndexGenerator/watch-story-specifiers.ts to a dynamic import() which is available in all CommonJS modules.
 ```
+
+- Vite 環境で、`import('/@fs/${file}')`のように`@fs`をつけた状態で import を実行するとソースファイルにあるモジュールを直接 dynamic import できる
+  - https://vitejs.dev/guide/#index-html-and-project-root
+  - https://vitejs.dev/config/server-options.html#server-fs-allow
+- framework で対応しているものの一覧
+  - https://github.com/storybookjs/storybook/tree/next/code/frameworks
