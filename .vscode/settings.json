@@ -1,3 +1,6 @@
 {
-  "cSpell.words": ["Turbopack", "Turborepo"]
+  "cSpell.words": ["Turbopack", "Turborepo"],
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
